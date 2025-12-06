@@ -3,14 +3,13 @@ import joblib
 import numpy as np
 from flask import Flask, request, render_template, flash
 from skimage import io, transform
-from werkzeug.utils import secure_filename # For handling filenames securely
+from werkzeug.utils import secure_filename
 
 # --- Configuration ---
 MODEL_FILENAME = 'brain_tumor_classifier.joblib'
-UPLOAD_FOLDER = 'uploads' # Create this folder inside 'BrainTumorClassification'
+UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
-# Image parameters MUST match those used during training
 IMG_HEIGHT = 128
 IMG_WIDTH = 128
 IMG_CHANNELS = 1
@@ -20,7 +19,7 @@ EXPECTED_FLAT_LEN = IMG_HEIGHT * IMG_WIDTH * IMG_CHANNELS
 # --- Flask App Initialization ---
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.secret_key = 'super secret key' # Needed for flashing messages
+app.secret_key = 'super secret key'
 
 # Create upload folder if it doesn't exist
 if not os.path.exists(UPLOAD_FOLDER):
@@ -132,11 +131,7 @@ def predict():
         flash('Invalid file type. Allowed types: png, jpg, jpeg.', 'error')
         return render_template('index.html', prediction=None)
 
-# --- Run the App (for local testing) ---
 if __name__ == '__main__':
-    # Make sure the upload folder exists
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)
-    # Run the app (accessible only on your computer)
-    # Use host='0.0.0.0' to make it accessible on your local network (e.g., from your phone)
     app.run(debug=True, host='0.0.0.0')
